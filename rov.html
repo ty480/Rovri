@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROV 5v5 Random Team</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
+
+  body {
+    font-family: 'Kanit', sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #1f1c2c, #928dab);
+    color: #fff;
+    padding: 20px;
+  }
+
+  h1 {
+    text-shadow: 0 0 10px #ffdf00;
+  }
+
+  button {
+    padding: 10px 25px;
+    font-size: 18px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: 0.3s;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+
+  #teams {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .team {
+    width: 300px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 15px;
+    padding: 15px;
+  }
+
+  .team h2 {
+    margin-bottom: 15px;
+    text-shadow: 0 0 5px #ffdf00;
+  }
+
+  .hero {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .hero:last-child {
+    border-bottom: none;
+  }
+
+  .position {
+    font-weight: bold;
+    color: #ffdf00;
+    font-size: 0.9em;
+    margin-bottom: 2px;
+  }
+</style>
+</head>
+<body>
+<h1>ROV 5v5 Random Team</h1>
+<button id="randomBtn" onclick="toggleRandom()">เริ่มสุ่ม</button>
+
+<!-- เสียงคลิก -->
+<audio id="clickSound" src="click.mp3" preload="auto"></audio>
+
+<div id="teams">
+  <div class="team" id="team1"><h2>ทีม 1</h2></div>
+  <div class="team" id="team2"><h2>ทีม 2</h2></div>
+</div>
+
+<script>
+const heroes = [
+"Tel'Annas","Yorn","Violet","Valhein","Hayate","Elsu","Moren","Slimz","Capheny","Fennik",
+"Laville","Tulen","Eland'orr","Thorne","Zill","Ryoma","Murad","Wukong","Nakroth","Airy",
+"Kriknak","Sinestrea","Paine","Butterfly","Quillen","D'Arcy","Aoi","Keera","Kain","Riktor",
+"Natalya","Ignis","Preyta","Kahlii","Aleister","Liliana","Raz","Jinna","Diao Chan","Ilumia",
+"Zata","Lorion","Dirak","Krixi","Toro","Sephera","Ishikawa","Siren","Zuka","Iggy",
+"Allain","Amily","Arthur","Errol","Florentino","Kil'Groth","Lu Bu","Maloch","Max","Omen",
+"Skud","Superm","Wiro","Yan","TeeMee","Baldum","Astrid","Volkath","Zephys","Veres",
+"Richter","Pang","Rouie","Yena","Zanis","Ata","Wonder Woman","Flesh","Stuart","Bolt Baron",
+"Chaugnar","Grakk","Cresht","Mina","Lumburr","Arum","Gildur","Superman","Alice","Y'bneth",
+"Annette","Peura","Zip","Krizzix","Flash"
+];
+
+const positions = ["ออฟเลน","แครี่","เมจ","ป่า","โรม"];
+
+let intervalId = null;
+let isRandomizing = false;
+
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+  return array;
+}
+
+function generateTeams(){
+  const shuffled = shuffle([...heroes]);
+  const team1 = shuffled.slice(0,5);
+  const team2 = shuffled.slice(5,10);
+
+  const team1Div = document.getElementById('team1');
+  const team2Div = document.getElementById('team2');
+
+  team1Div.innerHTML = '<h2>ทีม 1</h2>';
+  team2Div.innerHTML = '<h2>ทีม 2</h2>';
+
+  const pos1 = shuffle([...positions]);
+  const pos2 = shuffle([...positions]);
+
+  team1.forEach((hero,i)=>{
+    const div = document.createElement('div');
+    div.className = 'hero';
+    div.innerHTML = `<div class="position">${pos1[i]}</div>${hero}`;
+    team1Div.appendChild(div);
+  });
+
+  team2.forEach((hero,i)=>{
+    const div = document.createElement('div');
+    div.className = 'hero';
+    div.innerHTML = `<div class="position">${pos2[i]}</div>${hero}`;
+    team2Div.appendChild(div);
+  });
+}
+
+function toggleRandom() {
+  const clickSound = document.getElementById("clickSound");
+  clickSound.currentTime = 0; // รีเซ็ตเสียง
+  clickSound.play();          // เล่นเสียงตอนกดปุ่ม
+
+  if (isRandomizing) {
+    clearInterval(intervalId);
+    isRandomizing = false;
+    document.getElementById("randomBtn").textContent = "เริ่มสุ่ม";
+  } else {
+    intervalId = setInterval(generateTeams, 100);
+    isRandomizing = true;
+    document.getElementById("randomBtn").textContent = "หยุดสุ่ม";
+  }
+}
+</script>
+</body>
+</html>
